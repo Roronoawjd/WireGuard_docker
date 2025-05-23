@@ -1,0 +1,26 @@
+services:
+  wireguard:
+    image: linuxserver/wireguard
+    container_name: wireguard
+    cap_add:
+      - NET_ADMIN
+      - SYS_MODULE
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Asia/Seoul
+      - SERVERURL=[IP or DDNS] # DDNS 또는 공인 IP
+      - SERVERPORT=53000 # 사용 할 포트
+      - PEERS=4 # Client 수(선택)
+      - PEERDNS=auto # Client DNS(선택)
+      - INTERNAL_SUBNET=192.168.10.0 # 내부 IP 대역(선택)
+      - ALLOWEDIPS=0.0.0.0/0 # 접속 허용 IP 대역(선택)
+    volumes:
+      - ./config:/config
+      # - /lib/modules:/lib/modules # (선택)
+    ports:
+      - "53000:51820/udp" # 포트 포워딩
+    sysctls:
+      - net.ipv4.conf.all.src_valid_mark=1
+      - net.ipv4.ip_forward=1 #
+    restart: unless-stopped
